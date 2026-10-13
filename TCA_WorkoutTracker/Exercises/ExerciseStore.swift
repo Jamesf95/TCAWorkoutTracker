@@ -19,6 +19,12 @@ class ExerciseStore {
         // Mocking a network delay for more realistic state transitions.
         try? await Task.sleep(for: .seconds(2))
         
+        // Potentially throwing an error
+        let random = Int.random(in: 0...10)
+        if random < 3 {
+            throw .jsonParsingFailed
+        }
+        
         guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json") else {
             throw .noJsonFile
         }

@@ -55,7 +55,7 @@ public enum Category: String, Codable, CaseIterable, Sendable {
     case assistedBodyweight = "assisted bodyweight"
 }
 
-public struct Exercise: Codable, Hashable, Sendable {
+public struct Exercise: Codable, Hashable, Sendable, Identifiable {
     public let name: String
     public let aliases: [String]?
     public let primaryMuscles: [Muscle]
@@ -86,6 +86,10 @@ public struct Exercise: Codable, Hashable, Sendable {
         self.instructions = instructions
         self.description = description
         self.tips = tips
+    }
+    
+    public var id: Int {
+        self.hashValue
     }
 }
 
