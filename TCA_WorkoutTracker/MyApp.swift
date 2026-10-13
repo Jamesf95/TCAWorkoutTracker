@@ -1,9 +1,15 @@
 import SwiftUI
+import ComposableArchitecture
 
-@main struct MyApp: App {
+@main
+struct MyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ExericiseListPage(
+                store: Store(initialState: AppFeature.AppState.initial) {
+                    AppFeature()
+                }
+            )
         }
     }
 }

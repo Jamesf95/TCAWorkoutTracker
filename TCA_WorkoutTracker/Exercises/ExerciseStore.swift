@@ -14,7 +14,11 @@ enum ExerciseStoreError: Error {
 
 class ExerciseStore {
     
-    func fetchAll() throws (ExerciseStoreError) -> [Exercise] {
+    func fetchAll() async throws (ExerciseStoreError) -> [Exercise] {
+        
+        // Mocking a network delay for more realistic state transitions.
+        try? await Task.sleep(for: .seconds(2))
+        
         guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json") else {
             throw .noJsonFile
         }

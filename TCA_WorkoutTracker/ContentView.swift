@@ -6,9 +6,7 @@ struct ContentView: View {
         Text("Hello, world!")
             .padding()
             .onAppear {
-                let exercises = try! ExerciseStore()
-                    .fetchAll()
-                print(exercises)
+                
             }
     }
 }
