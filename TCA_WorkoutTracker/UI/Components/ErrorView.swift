@@ -47,7 +47,7 @@ struct ErrorView: View {
                 Spacer().frame(height: 8)
                 
                 Button(action: onRetryClicked) {
-                    Text("Retry")
+                    Text(retryLabel)
                         .fontWeight(.bold)
                         .frame(minWidth: 200)
                         .frame(minHeight: 48)

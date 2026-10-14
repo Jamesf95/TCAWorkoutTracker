@@ -14,14 +14,18 @@ struct AppFeature {
     struct State: Equatable {
         var exerciseList: [Exercise]
         var isLoading: Bool
-        var error: ExerciseStoreError?
+        var error: AppError?
     }
     
     enum Action {
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
-        case exerciseListFailed(ExerciseStoreError)
+        case exerciseListFailed(AppError)
+    }
+    
+    enum AppError: Equatable {
+        case loadError
     }
     
     @Dependency(\.appFeatureDependencies) var dependencies
@@ -43,8 +47,9 @@ struct AppFeature {
                         let list = try await dependencies.fetchExercises()
                         await send(.exerciseListLoaded(list))
                         
-                    } catch let error as ExerciseStoreError {
-                        await send(.exerciseListFailed(error))
+                    } catch {
+                        let appError = parseAppError(from: error)
+                        await send(.exerciseListFailed(appError))
                     }
                 }
                 
@@ -71,4 +76,10 @@ extension AppFeature.State {
         .init(exerciseList: [], isLoading: false, error: nil)
     }
     
+}
+
+private nonisolated func parseAppError(from cause: Error) -> AppFeature.AppError {
+    // Custom error handling here. This is just a dummy example so
+    // just returns a loadError
+    return .loadError
 }
