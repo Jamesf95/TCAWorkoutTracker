@@ -38,8 +38,15 @@ struct ExerciseListView: View {
     let exercises: [Exercise]
     
     var body: some View {
-        List(exercises) { exercise in
-            Text(exercise.name)
+        List {
+            Section {
+                ForEach(exercises) { exercise in
+                    Text(exercise.name)
+                }
+            } header: {
+                Text("Exercises")
+                    .font(AppTypography.brandTitle)
+            }
         }
     }
 }

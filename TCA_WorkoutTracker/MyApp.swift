@@ -10,6 +10,7 @@ struct MyApp: App {
                     AppFeature()
                 }
             )
+            .font(AppTypography.body)
         }
     }
 }
