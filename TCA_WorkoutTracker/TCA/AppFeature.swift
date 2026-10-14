@@ -11,20 +11,22 @@ import ComposableArchitecture
 struct AppFeature {
     
     @ObservableState
-    struct AppState: Equatable {
+    struct State: Equatable {
         var exerciseList: [Exercise]
         var isLoading: Bool
         var error: ExerciseStoreError?
     }
     
-    enum AppAction {
+    enum Action {
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
         case exerciseListFailed(ExerciseStoreError)
     }
     
-    var body: some Reducer<AppState, AppAction> {
+    @Dependency(\.appFeatureDependencies) var dependencies
+    
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             
@@ -38,8 +40,7 @@ struct AppFeature {
                     // There's nothing here enforcing I return something
                     // possible to forget and do nothing?
                     do {
-                        // TODO: Dependencies.
-                        let list = try await ExerciseStore().fetchAll()
+                        let list = try await dependencies.fetchExercises()
                         await send(.exerciseListLoaded(list))
                         
                     } catch let error as ExerciseStoreError {
@@ -64,9 +65,9 @@ struct AppFeature {
     }
 }
 
-extension AppFeature.AppState {
+extension AppFeature.State {
     
-    static var initial: AppFeature.AppState {
+    static var initial: AppFeature.State {
         .init(exerciseList: [], isLoading: false, error: nil)
     }
     

@@ -6,7 +6,7 @@ struct MyApp: App {
     var body: some Scene {
         WindowGroup {
             ExericiseListPage(
-                store: Store(initialState: AppFeature.AppState.initial) {
+                store: Store(initialState: AppFeature.State.initial) {
                     AppFeature()
                 }
             )
