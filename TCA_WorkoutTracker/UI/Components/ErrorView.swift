@@ -27,34 +27,44 @@ struct ErrorView: View {
     }
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             Image(systemName: "exclamationmark.triangle.fill")
-                .resizable()
-                .frame(width: 72, height: 72)
-                .foregroundStyle(.orange)
-            
-            Spacer().frame(height: 8)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(AppColors.notification)
+                .frame(width: 48, height: 48)
+                .background(AppColors.coral.opacity(0.3), in: Circle())
             
             Text(title)
-                .font(.title2)
+                .font(AppTypography.sectionTitle)
+                .foregroundStyle(AppColors.ink)
+                .multilineTextAlignment(.center)
             
             if let subtitle {
                 Text(subtitle)
-                    .font(.body)
+                    .font(AppTypography.body)
+                    .foregroundStyle(AppColors.textSecondary)
+                    .multilineTextAlignment(.center)
             }
             
             if let onRetryClicked {
-                Spacer().frame(height: 8)
-                
                 Button(action: onRetryClicked) {
                     Text(retryLabel)
-                        .fontWeight(.bold)
-                        .frame(minWidth: 200)
+                        .font(AppTypography.button)
+                        .foregroundStyle(AppColors.inkOnDark)
+                        .frame(maxWidth: .infinity)
                         .frame(minHeight: 48)
+                        .background(AppColors.ink, in: RoundedRectangle(cornerRadius: 12))
                 }
-                .buttonStyle(.borderedProminent)
-                
+                .buttonStyle(.plain)
+                .padding(.top, 4)
             }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(20)
+        .background(AppColors.surface, in: RoundedRectangle(cornerRadius: 16))
+        .overlay {
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(AppColors.border, lineWidth: 1)
         }
     }
     
@@ -62,4 +72,7 @@ struct ErrorView: View {
 
 #Preview {
     ErrorView(subtitle: "Click the button below to retry", onRetryClicked: {})
+        .padding(20)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppColors.canvas)
 }

@@ -13,6 +13,7 @@ enum AppColors {
     
     // Core
     static let ink = Color(hex: 0x171916)
+    static let inkOnDark = Color(hex: 0xFFFFFF)
     static let textSecondary = Color(hex: 0x777C74)
     static let paper = Color(hex: 0xF5F5F0)
     static let surface = Color(hex: 0xFFFFFF)

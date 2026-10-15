@@ -1,5 +1,5 @@
 //
-//  AppFeatureTests.swift
+//  HomeFeatureTests.swift
 //  TCA_WorkoutTracker
 //
 //  Created by James Foot on 14/10/2026.
@@ -11,14 +11,14 @@ import ComposableArchitecture
 
 @MainActor
 @Suite
-struct AppFeatureTests {
+struct HomeFeatureTests {
 
     @Test
     func initialLoadSuccess() async {
         let store = TestStore(initialState: .initial) {
-            AppFeature()
+            HomeFeature()
         } withDependencies: {
-            $0.appFeatureDependencies.fetchExercises = { mockExercises }
+            $0.homeFeatureDependencies.fetchExercises = { mockExercises }
         }
 
         await store.send(.initialLoad) {
@@ -36,12 +36,12 @@ struct AppFeatureTests {
 
     @Test
     func initialLoadFailure() async {
-        let expectedError = ExerciseStoreError.jsonParsingFailed
+        let expectedError = HomeFeature.HomeError.loadError
 
         let store = TestStore(initialState: .initial) {
-            AppFeature()
+            HomeFeature()
         } withDependencies: {
-            $0.appFeatureDependencies.fetchExercises = { throw expectedError }
+            $0.homeFeatureDependencies.fetchExercises = { throw ExerciseStoreError.jsonParsingFailed }
         }
 
         await store.send(.initialLoad) {
@@ -59,16 +59,16 @@ struct AppFeatureTests {
 
     @Test
     func retryPressedClearsErrorAndSucceeds() async {
-        let initialState = AppFeature.State(
+        let initialState = HomeFeature.State(
             exerciseList: [],
             isLoading: false,
-            error: .jsonParsingFailed
+            error: .loadError
         )
 
         let store = TestStore(initialState: initialState) {
-            AppFeature()
+            HomeFeature()
         } withDependencies: {
-            $0.appFeatureDependencies.fetchExercises = { mockExercises }
+            $0.homeFeatureDependencies.fetchExercises = { mockExercises }
         }
 
         await store.send(.retryPressed) {
@@ -134,4 +134,3 @@ private let mockExercises: [Exercise] = [
         tips: ["Avoid swinging or using momentum.", "Drive your elbows down toward the floor."]
     )
 ]
-

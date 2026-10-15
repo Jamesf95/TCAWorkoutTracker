@@ -5,12 +5,9 @@ import ComposableArchitecture
 struct MyApp: App {
     var body: some Scene {
         WindowGroup {
-            HomePage()
-//            ExericiseListPage(
-//                store: Store(initialState: AppFeature.State.initial) {
-//                    AppFeature()
-//                }
-//            )
+            HomePage(store: Store(initialState: HomeFeature.State.initial) {
+                HomeFeature()
+            })
             .font(AppTypography.body)
         }
     }

@@ -1,5 +1,5 @@
 //
-//  AppFeature.swift
+//  HomeFeature.swift
 //  TCA_WorkoutTracker
 //
 //  Created by James Foot on 13/10/2026.
@@ -8,27 +8,27 @@
 import ComposableArchitecture
 
 @Reducer
-struct AppFeature {
+struct HomeFeature {
     
     @ObservableState
     struct State: Equatable {
         var exerciseList: [Exercise]
         var isLoading: Bool
-        var error: AppError?
+        var error: HomeError?
     }
     
     enum Action {
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
-        case exerciseListFailed(AppError)
+        case exerciseListFailed(HomeError)
     }
     
-    enum AppError: Equatable {
+    enum HomeError: Equatable {
         case loadError
     }
     
-    @Dependency(\.appFeatureDependencies) var dependencies
+    @Dependency(\.homeFeatureDependencies) var dependencies
     
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -48,8 +48,8 @@ struct AppFeature {
                         await send(.exerciseListLoaded(list))
                         
                     } catch {
-                        let appError = parseAppError(from: error)
-                        await send(.exerciseListFailed(appError))
+                        let homeError = parseHomeError(from: error)
+                        await send(.exerciseListFailed(homeError))
                     }
                 }
                 
@@ -70,15 +70,15 @@ struct AppFeature {
     }
 }
 
-extension AppFeature.State {
+extension HomeFeature.State {
     
-    static var initial: AppFeature.State {
+    static var initial: HomeFeature.State {
         .init(exerciseList: [], isLoading: false, error: nil)
     }
     
 }
 
-private nonisolated func parseAppError(from cause: Error) -> AppFeature.AppError {
+private nonisolated func parseHomeError(from cause: Error) -> HomeFeature.HomeError {
     // Custom error handling here. This is just a dummy example so
     // just returns a loadError
     return .loadError
