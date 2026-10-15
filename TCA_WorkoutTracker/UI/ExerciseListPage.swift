@@ -45,7 +45,7 @@ struct ExerciseListView: View {
                 }
             } header: {
                 Text("Exercises")
-                    .font(AppTypography.brandTitle)
+                    .font(AppTypography.screenTitle)
             }
         }
     }
