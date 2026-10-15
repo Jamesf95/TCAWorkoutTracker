@@ -9,7 +9,11 @@ import SwiftUI
 
 // MARK: - App Theme
 
-enum AppColors {
+// I think AppColor is nicer - but I don't want ot change it
+// TODO: Have AI change it everywhere.
+typealias AppColors = AppColor
+
+enum AppColor {
     
     // Core
     static let ink = Color(hex: 0x171916)
@@ -28,7 +32,7 @@ enum AppColors {
 
     // Supporting
     static let canvas = Color(hex: 0xD8D9D1)
-    static let phoneFrame = Color(hex: 0x242522)
+    static let darkCard = Color(hex: 0x242522)
     static let brandAccent = Color(hex: 0xA5C51D)
     static let notification = Color(hex: 0xED6D4E)
     static let destructive = Color(hex: 0xD46148)

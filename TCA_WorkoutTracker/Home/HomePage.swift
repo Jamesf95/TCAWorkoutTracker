@@ -147,7 +147,7 @@ private struct StartWorkoutCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(16)
-        .background(AppColors.ink, in: RoundedRectangle(cornerRadius: 16))
+        .background(AppColors.darkCard, in: RoundedRectangle(cornerRadius: 16))
     }
 }
 
