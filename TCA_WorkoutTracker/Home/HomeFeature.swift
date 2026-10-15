@@ -13,13 +13,13 @@ struct HomeFeature {
     @ObservableState
     struct State: Equatable {
         var exerciseList: [Exercise]
-        var selectedExercises: Set<Exercise>
+        var selectedExercises: [Exercise]
         var isLoading: Bool
         var error: HomeError?
         
         init(
             exerciseList: [Exercise] = [],
-            selectedExercises: Set<Exercise> = Set<Exercise>(),
+            selectedExercises: [Exercise] = [],
             isLoading: Bool = false,
             error: HomeError? = nil
         ) {
@@ -32,7 +32,7 @@ struct HomeFeature {
     
     enum Action {
         case startWorkoutTapped
-        case selectedExercisesChanged(Set<Exercise>)
+        case selectedExercisesChanged([Exercise])
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
@@ -50,7 +50,10 @@ struct HomeFeature {
             switch action {
 
             case .selectedExercisesChanged(let selectedExercises):
-                state.selectedExercises = selectedExercises
+                var seen = Set<Exercise>()
+                state.selectedExercises = selectedExercises.filter {
+                    seen.insert($0).inserted
+                }
                 return .none
                 
             case .startWorkoutTapped:

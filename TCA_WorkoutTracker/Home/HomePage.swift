@@ -89,7 +89,7 @@ struct HomePage: View {
                 ErrorView(title: "Exercises failed to load")
                 
             } else {
-                let binding = Binding<Set<Exercise>>(
+                let binding = Binding<[Exercise]>(
                     get: { store.selectedExercises },
                     set: {
                         store.send(.selectedExercisesChanged($0))
@@ -97,7 +97,7 @@ struct HomePage: View {
                 )
                 ExerciseSelector(
                     exercises: store.exerciseList,
-                    selectedExercies: binding
+                    selectedExercises: binding
                 )
             }
     

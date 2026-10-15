@@ -34,11 +34,7 @@ struct RootFeature {
         Reduce { state, action in
             switch action {
             case .home(.startWorkoutTapped):
-                // TODO: Preserve order of selected exercises.
-                // IOts using a Set of exercises at the moment so order is lost. Better
-                // to use an array and manually check for duplicates.
-                let exercises = state.home.selectedExercises.map { $0 }
-                let initialWorkoutState = WorkoutFeature.State(exercises: exercises)
+                let initialWorkoutState = WorkoutFeature.State(exercises: state.home.selectedExercises)
                 state.path.append(.workout(initialWorkoutState))
                 return .none
 

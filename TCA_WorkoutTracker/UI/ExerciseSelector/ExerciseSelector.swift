@@ -12,33 +12,99 @@ private let animationDuraration: TimeInterval = 0.1
 struct ExerciseSelector: View {
 
     let exercises: [Exercise]
-    @Binding var selectedExercies: Set<Exercise>
+    @Binding var selectedExercises: [Exercise]
+    @State private var selectedMuscleGroup: MuscleGroup = .arms
     
     var body: some View {
-        LazyVStack {
-            ForEach(exercises) { exercise in
-                let isSelected = selectedExercies.contains(exercise)
-                Button {
-                    withAnimation(.snappy(duration: animationDuraration)) {
-                        if isSelected {
-                            selectedExercies.remove(exercise)
-                        } else {
-                            selectedExercies.insert(exercise)
+        VStack {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(MuscleGroup.allCases, id: \.self) { group in
+                        muscleFilterButton(
+                            title: group.rawValue,
+                            isSelected: selectedMuscleGroup == group
+                        ) {
+                            selectedMuscleGroup = group
                         }
                     }
                 }
-                label: {
-                    ExerciseCard(
-                        exercise: exercise,
-                        isSelected: isSelected
-                    )
-                }
-                .buttonStyle(.plain)
-                .sensoryFeedback(.selection, trigger: isSelected)
-                .accessibilityLabel(exercise.name)
-                .accessibilityValue(isSelected ? "Selected" : "Not selected")
-                .accessibilityHint(isSelected ? "Double-tap to remove from selection" : "Double-tap to add to selection")
             }
+
+            LazyVStack {
+                ForEach(filteredExercises) { exercise in
+                    let isSelected = selectedExercises.contains(exercise)
+                    Button {
+                        withAnimation(.snappy(duration: animationDuraration)) {
+                            if isSelected {
+                                selectedExercises.removeAll { $0 == exercise }
+                            } else {
+                                selectedExercises.append(exercise)
+                            }
+                        }
+                    }
+                    label: {
+                        ExerciseCard(
+                            exercise: exercise,
+                            isSelected: isSelected
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .sensoryFeedback(.selection, trigger: isSelected)
+                    .accessibilityLabel(exercise.name)
+                    .accessibilityValue(isSelected ? "Selected" : "Not selected")
+                    .accessibilityHint(isSelected ? "Double-tap to remove from selection" : "Double-tap to add to selection")
+                }
+            }
+        }
+    }
+
+    private var filteredExercises: [Exercise] {
+        return exercises.filter {
+            !(Set($0.primaryMuscles + $0.secondaryMuscles).isDisjoint(with: selectedMuscleGroup.muscles))
+        }
+    }
+
+    private func muscleFilterButton(
+        title: String,
+        isSelected: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(AppTypography.caption)
+                .foregroundStyle(isSelected ? .white : AppColors.textSecondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(isSelected ? AppColors.ink : AppColors.surface, in: Capsule())
+                .overlay {
+                    Capsule()
+                        .stroke(isSelected ? .clear : AppColors.border, lineWidth: 1)
+                }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Filter by \(title)")
+    }
+}
+
+private enum MuscleGroup: String, CaseIterable {
+    case arms = "Arms"
+    case back = "Back"
+    case core = "Core"
+    case legs = "Legs"
+    case upperBody = "Upper body"
+
+    var muscles: Set<Muscle> {
+        switch self {
+        case .arms:
+            [.biceps, .triceps, .forearms]
+        case .back:
+            [.lats, .middleBack, .lowerBack, .traps]
+        case .legs:
+            [.quadriceps, .hamstrings, .calves, .glutes, .adductors, .abductors]
+        case .core:
+            [.abdominals]
+        case .upperBody:
+            [.chest, .shoulders, .neck]
         }
     }
 }
@@ -99,7 +165,7 @@ private struct ExerciseCard: View {
 }
 
 #Preview {
-    @Previewable @State var selectedExercises: Set<Exercise> = []
+    @Previewable @State var selectedExercises: [Exercise] = []
     let allExercises = [
         Exercise(
             name: "Exercise 1",
@@ -118,7 +184,7 @@ private struct ExerciseCard: View {
     ]
     
     VStack {
-        ExerciseSelector(exercises: allExercises, selectedExercies: $selectedExercises)
+        ExerciseSelector(exercises: allExercises, selectedExercises: $selectedExercises)
     }
     .padding(16)
     .frame(maxWidth: .infinity, maxHeight: .infinity)

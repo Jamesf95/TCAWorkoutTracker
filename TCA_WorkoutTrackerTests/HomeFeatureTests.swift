@@ -15,7 +15,7 @@ struct HomeFeatureTests {
 
     @Test
     func initialLoadSuccess() async {
-        let store = TestStore(initialState: .initial) {
+        let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
             $0.homeFeatureDependencies.fetchExercises = { mockExercises }
@@ -38,7 +38,7 @@ struct HomeFeatureTests {
     func initialLoadFailure() async {
         let expectedError = HomeFeature.HomeError.loadError
 
-        let store = TestStore(initialState: .initial) {
+        let store = TestStore(initialState: HomeFeature.State()) {
             HomeFeature()
         } withDependencies: {
             $0.homeFeatureDependencies.fetchExercises = { throw ExerciseStoreError.jsonParsingFailed }
@@ -54,6 +54,33 @@ struct HomeFeatureTests {
             $0.isLoading = false
             $0.error = expectedError
             $0.exerciseList = []
+        }
+    }
+
+    @Test
+    func initialLoadWithEmptyResultClearsStaleState() async {
+        let selectedExercises = [mockExercises[0]]
+        let initialState = HomeFeature.State(
+            exerciseList: mockExercises,
+            selectedExercises: selectedExercises,
+            error: .loadError
+        )
+        let store = TestStore(initialState: initialState) {
+            HomeFeature()
+        } withDependencies: {
+            $0.homeFeatureDependencies.fetchExercises = { [] }
+        }
+
+        await store.send(.initialLoad) {
+            $0.isLoading = true
+            $0.error = nil
+            $0.exerciseList = []
+        }
+
+        await store.receive(\.exerciseListLoaded) {
+            $0.isLoading = false
+            $0.exerciseList = []
+            $0.error = nil
         }
     }
 
@@ -82,6 +109,48 @@ struct HomeFeatureTests {
             $0.exerciseList = mockExercises
             $0.error = nil
         }
+    }
+
+    @Test
+    func retryPressedFailureSetsErrorAndKeepsSelectedExercises() async {
+        let selectedExercises = [mockExercises[0]]
+        let initialState = HomeFeature.State(
+            exerciseList: mockExercises,
+            selectedExercises: selectedExercises,
+            error: .loadError
+        )
+        let store = TestStore(initialState: initialState) {
+            HomeFeature()
+        } withDependencies: {
+            $0.homeFeatureDependencies.fetchExercises = {
+                throw ExerciseStoreError.jsonParsingFailed
+            }
+        }
+
+        await store.send(.retryPressed) {
+            $0.isLoading = true
+            $0.error = nil
+            $0.exerciseList = []
+        }
+
+        await store.receive(\.exerciseListFailed) {
+            $0.isLoading = false
+            $0.error = .loadError
+            $0.exerciseList = []
+        }
+    }
+
+    @Test
+    func startWorkoutTappedDoesNotChangeState() async {
+        let initialState = HomeFeature.State(
+            exerciseList: mockExercises,
+            selectedExercises: [mockExercises[0]]
+        )
+        let store = TestStore(initialState: initialState) {
+            HomeFeature()
+        }
+
+        await store.send(.startWorkoutTapped)
     }
 }
 
