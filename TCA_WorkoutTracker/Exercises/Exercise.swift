@@ -7,6 +7,8 @@
 
 import Foundation
 
+// Taken from here: https://github.com/wrkout/exercises.json
+
 public enum Muscle: String, Codable, CaseIterable, Sendable {
     case abdominals = "abdominals"
     case hamstrings = "hamstrings"
@@ -25,6 +27,29 @@ public enum Muscle: String, Codable, CaseIterable, Sendable {
     case middleBack = "middle back"
     case lats = "lats"
     case neck = "neck"
+}
+
+public enum MuscleGroup: String, CaseIterable, Equatable {
+    case arms = "Arms"
+    case back = "Back"
+    case core = "Core"
+    case legs = "Legs"
+    case upperBody = "Upper body"
+
+    var muscles: Set<Muscle> {
+        switch self {
+        case .arms:
+            [.biceps, .triceps, .forearms]
+        case .back:
+            [.lats, .middleBack, .lowerBack, .traps]
+        case .core:
+            [.abdominals]
+        case .legs:
+            [.quadriceps, .hamstrings, .calves, .glutes, .adductors, .abductors]
+        case .upperBody:
+            [.chest, .shoulders, .neck]
+        }
+    }
 }
 
 public enum Equipment: String, Codable, CaseIterable, Sendable {

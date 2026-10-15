@@ -14,19 +14,21 @@ enum ExerciseStoreError: Error {
 
 class ExerciseStore {
     
-    func fetchAll() async throws (ExerciseStoreError) -> [Exercise] {
+    func fetchAll() async throws -> [Exercise] {
         
         // Mocking a network delay for more realistic state transitions.
         try? await Task.sleep(for: .seconds(2))
         
-        // Potentially throwing an error
-        let random = Int.random(in: 0...10)
-        if random < 3 {
-            throw .jsonParsingFailed
-        }
+        try Task.checkCancellation()
+        
+        // Potentially throwing an error - Disabled for now.
+//        let random = Int.random(in: 0...10)
+//        if random < 3 {
+//            throw ExerciseStoreError.jsonParsingFailed
+//        }
         
         guard let url = Bundle.main.url(forResource: "exercises", withExtension: "json") else {
-            throw .noJsonFile
+            throw ExerciseStoreError.noJsonFile
         }
           
         let data = try fetchData(from: url)

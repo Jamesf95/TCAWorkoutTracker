@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F0F2B648307D589D00789454 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F0F2B647307D589D00789454 /* ComposableArchitecture */; };
+		F0F2B6C23082155F00789454 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F0F2B6C13082155600789454 /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* TCA_WorkoutTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TCA_WorkoutTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F0F2B65C307FF8A600789454 /* TCA_WorkoutTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TCA_WorkoutTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0F2B6C13082155600789454 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -69,6 +71,7 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
+				F0F2B6C13082155600789454 /* README.md */,
 				000000000000000000000010 /* TCA_WorkoutTracker */,
 				F0F2B65D307FF8A600789454 /* TCA_WorkoutTrackerTests */,
 				000000000000000000000020 /* Products */,
@@ -175,6 +178,7 @@
 		000000000000000140000000 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				F0F2B6C23082155F00789454 /* README.md in Resources */,
 			);
 		};
 		F0F2B65A307FF8A600789454 /* Resources */ = {

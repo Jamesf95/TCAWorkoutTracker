@@ -12,15 +12,15 @@ private let animationDuraration: TimeInterval = 0.1
 struct ExerciseSelector: View {
 
     let exercises: [Exercise]
-    let selectedMuscleGroup: HomeFeature.MuscleGroup
-    let onMuscleGroupSelected: (HomeFeature.MuscleGroup) -> Void
+    let selectedMuscleGroup: MuscleGroup
+    let onMuscleGroupSelected: (MuscleGroup) -> Void
     @Binding var selectedExercises: [Exercise]
     
     var body: some View {
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(HomeFeature.MuscleGroup.allCases, id: \.self) { group in
+                    ForEach(MuscleGroup.allCases, id: \.self) { group in
                         muscleFilterButton(
                             title: group.rawValue,
                             isSelected: selectedMuscleGroup == group
