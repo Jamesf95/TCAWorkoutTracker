@@ -18,6 +18,7 @@ struct HomeFeature {
     }
     
     enum Action {
+        case startWorkoutTapped
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
@@ -33,6 +34,9 @@ struct HomeFeature {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+
+            case .startWorkoutTapped:
+                return .none
             
             case .retryPressed: fallthrough
             case .initialLoad:

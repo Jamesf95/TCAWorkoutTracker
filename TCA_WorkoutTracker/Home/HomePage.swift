@@ -23,11 +23,13 @@ struct HomePage: View {
         .background(AppColors.canvas)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if !selectedExercises.isEmpty {
-                StartWorkoutCard(count: selectedExercises.count)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                StartWorkoutCard(count: selectedExercises.count) {
+                    store.send(.startWorkoutTapped)
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: selectedExercises.isEmpty)
@@ -117,7 +119,8 @@ struct HomePage: View {
 
 private struct StartWorkoutCard: View {
     let count: Int
-
+    let onStartWorkoutTapped: () -> Void
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -133,7 +136,7 @@ private struct StartWorkoutCard: View {
             
             Spacer()
             
-            LimeButton(title: "Start workout", action: {})
+            LimeButton(title: "Start workout", action: onStartWorkoutTapped)
         }
         .frame(maxWidth: .infinity)
         .padding(16)

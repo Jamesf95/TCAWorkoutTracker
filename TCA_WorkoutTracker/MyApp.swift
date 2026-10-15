@@ -5,9 +5,11 @@ import ComposableArchitecture
 struct MyApp: App {
     var body: some Scene {
         WindowGroup {
-            HomePage(store: Store(initialState: HomeFeature.State.initial) {
-                HomeFeature()
-            })
+            RootPage(
+                store: Store(initialState: RootFeature.State()) {
+                    RootFeature()
+                }
+            )
             .font(AppTypography.body)
         }
     }
