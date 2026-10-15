@@ -12,26 +12,27 @@ private let animationDuraration: TimeInterval = 0.1
 struct ExerciseSelector: View {
 
     let exercises: [Exercise]
+    let selectedMuscleGroup: HomeFeature.MuscleGroup
+    let onMuscleGroupSelected: (HomeFeature.MuscleGroup) -> Void
     @Binding var selectedExercises: [Exercise]
-    @State private var selectedMuscleGroup: MuscleGroup = .arms
     
     var body: some View {
         VStack {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(MuscleGroup.allCases, id: \.self) { group in
+                    ForEach(HomeFeature.MuscleGroup.allCases, id: \.self) { group in
                         muscleFilterButton(
                             title: group.rawValue,
                             isSelected: selectedMuscleGroup == group
                         ) {
-                            selectedMuscleGroup = group
+                            onMuscleGroupSelected(group)
                         }
                     }
                 }
             }
 
             LazyVStack {
-                ForEach(filteredExercises) { exercise in
+                ForEach(exercises) { exercise in
                     let isSelected = selectedExercises.contains(exercise)
                     Button {
                         withAnimation(.snappy(duration: animationDuraration)) {
@@ -58,12 +59,6 @@ struct ExerciseSelector: View {
         }
     }
 
-    private var filteredExercises: [Exercise] {
-        return exercises.filter {
-            !(Set($0.primaryMuscles + $0.secondaryMuscles).isDisjoint(with: selectedMuscleGroup.muscles))
-        }
-    }
-
     private func muscleFilterButton(
         title: String,
         isSelected: Bool,
@@ -83,29 +78,6 @@ struct ExerciseSelector: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Filter by \(title)")
-    }
-}
-
-private enum MuscleGroup: String, CaseIterable {
-    case arms = "Arms"
-    case back = "Back"
-    case core = "Core"
-    case legs = "Legs"
-    case upperBody = "Upper body"
-
-    var muscles: Set<Muscle> {
-        switch self {
-        case .arms:
-            [.biceps, .triceps, .forearms]
-        case .back:
-            [.lats, .middleBack, .lowerBack, .traps]
-        case .legs:
-            [.quadriceps, .hamstrings, .calves, .glutes, .adductors, .abductors]
-        case .core:
-            [.abdominals]
-        case .upperBody:
-            [.chest, .shoulders, .neck]
-        }
     }
 }
 
@@ -184,7 +156,12 @@ private struct ExerciseCard: View {
     ]
     
     VStack {
-        ExerciseSelector(exercises: allExercises, selectedExercises: $selectedExercises)
+        ExerciseSelector(
+            exercises: allExercises,
+            selectedMuscleGroup: .arms,
+            onMuscleGroupSelected: { _ in },
+            selectedExercises: $selectedExercises
+        )
     }
     .padding(16)
     .frame(maxWidth: .infinity, maxHeight: .infinity)

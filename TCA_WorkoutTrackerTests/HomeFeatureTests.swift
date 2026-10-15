@@ -152,6 +152,29 @@ struct HomeFeatureTests {
 
         await store.send(.startWorkoutTapped)
     }
+
+    @Test
+    func selectingMuscleGroupUpdatesSelectedGroupAndFilteredExercises() async {
+        let store = TestStore(
+            initialState: HomeFeature.State(exerciseList: mockExercises)
+        ) {
+            HomeFeature()
+        }
+
+        #expect(store.state.filteredExercises.map(\.name) == ["Barbell Bench Press", "Pull-up"])
+
+        await store.send(.muscleGroupSelected(.legs)) {
+            $0.selectedMuscleGroup = .legs
+        }
+
+        #expect(store.state.filteredExercises.map(\.name) == ["Barbell Squat"])
+
+        await store.send(.muscleGroupSelected(.upperBody)) {
+            $0.selectedMuscleGroup = .upperBody
+        }
+
+        #expect(store.state.filteredExercises.map(\.name) == ["Barbell Bench Press"])
+    }
 }
 
 

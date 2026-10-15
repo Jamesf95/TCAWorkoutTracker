@@ -14,25 +14,58 @@ struct HomeFeature {
     struct State: Equatable {
         var exerciseList: [Exercise]
         var selectedExercises: [Exercise]
+        var selectedMuscleGroup: MuscleGroup
         var isLoading: Bool
         var error: HomeError?
+
+        var filteredExercises: [Exercise] {
+            exerciseList.filter {
+                !Set($0.primaryMuscles + $0.secondaryMuscles).isDisjoint(with: selectedMuscleGroup.muscles)
+            }
+        }
         
         init(
             exerciseList: [Exercise] = [],
             selectedExercises: [Exercise] = [],
+            selectedMuscleGroup: MuscleGroup = .arms,
             isLoading: Bool = false,
             error: HomeError? = nil
         ) {
             self.exerciseList = exerciseList
             self.selectedExercises = selectedExercises
+            self.selectedMuscleGroup = selectedMuscleGroup
             self.isLoading = isLoading
             self.error = error
+        }
+    }
+
+    enum MuscleGroup: String, CaseIterable, Equatable {
+        case arms = "Arms"
+        case back = "Back"
+        case core = "Core"
+        case legs = "Legs"
+        case upperBody = "Upper body"
+
+        var muscles: Set<Muscle> {
+            switch self {
+            case .arms:
+                [.biceps, .triceps, .forearms]
+            case .back:
+                [.lats, .middleBack, .lowerBack, .traps]
+            case .core:
+                [.abdominals]
+            case .legs:
+                [.quadriceps, .hamstrings, .calves, .glutes, .adductors, .abductors]
+            case .upperBody:
+                [.chest, .shoulders, .neck]
+            }
         }
     }
     
     enum Action {
         case startWorkoutTapped
         case selectedExercisesChanged([Exercise])
+        case muscleGroupSelected(MuscleGroup)
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
@@ -54,6 +87,10 @@ struct HomeFeature {
                 state.selectedExercises = selectedExercises.filter {
                     seen.insert($0).inserted
                 }
+                return .none
+
+            case .muscleGroupSelected(let muscleGroup):
+                state.selectedMuscleGroup = muscleGroup
                 return .none
                 
             case .startWorkoutTapped:

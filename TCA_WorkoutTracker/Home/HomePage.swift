@@ -96,7 +96,9 @@ struct HomePage: View {
                     }
                 )
                 ExerciseSelector(
-                    exercises: store.exerciseList,
+                    exercises: store.filteredExercises,
+                    selectedMuscleGroup: store.selectedMuscleGroup,
+                    onMuscleGroupSelected: { store.send(.muscleGroupSelected($0)) },
                     selectedExercises: binding
                 )
             }
