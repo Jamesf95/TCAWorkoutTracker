@@ -12,9 +12,6 @@ struct HomePage: View {
     
     let store: StoreOf<HomeFeature>
     
-    // TODO: Move to store
-    @State var selectedExercises = Set<Exercise>()
-    
     var body: some View {
         ScrollView {
             scrollViewBody
@@ -22,8 +19,8 @@ struct HomePage: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppColors.canvas)
         .safeAreaInset(edge: .bottom, spacing: 0) {
-            if !selectedExercises.isEmpty {
-                StartWorkoutCard(count: selectedExercises.count) {
+            if !store.selectedExercises.isEmpty {
+                StartWorkoutCard(count: store.selectedExercises.count) {
                     store.send(.startWorkoutTapped)
                 }
                 .padding(.horizontal, 20)
@@ -32,7 +29,7 @@ struct HomePage: View {
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: selectedExercises.isEmpty)
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.selectedExercises.isEmpty)
         .onAppear {
             if store.exerciseList.isEmpty && !store.isLoading {
                 store.send(.initialLoad)
@@ -76,9 +73,13 @@ struct HomePage: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             if store.error != nil {
-                ErrorView(title: "Error fetching exercises", subtitle: "We're unable to load your exercises. Please retry later.", onRetryClicked: {
-                    store.send(.retryPressed)
-                })
+                ErrorView(
+                    title: "Error fetching exercises",
+                    subtitle: "We're unable to load your exercises. Please retry later.",
+                    onRetryClicked: {
+                        store.send(.retryPressed)
+                    }
+                )
                 
             } else if store.isLoading {
                 ProgressView("Loading")
@@ -88,9 +89,15 @@ struct HomePage: View {
                 ErrorView(title: "Exercises failed to load")
                 
             } else {
+                let binding = Binding<Set<Exercise>>(
+                    get: { store.selectedExercises },
+                    set: {
+                        store.send(.selectedExercisesChanged($0))
+                    }
+                )
                 ExerciseSelector(
                     exercises: store.exerciseList,
-                    selectedExercies: $selectedExercises
+                    selectedExercies: binding
                 )
             }
     

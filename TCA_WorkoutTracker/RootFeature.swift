@@ -12,7 +12,7 @@ struct RootFeature {
     
     @ObservableState
     struct State {
-        var home = HomeFeature.State.initial
+        var home = HomeFeature.State()
         var path = StackState<Path.State>()
     }
     
@@ -34,7 +34,12 @@ struct RootFeature {
         Reduce { state, action in
             switch action {
             case .home(.startWorkoutTapped):
-                state.path.append(.workout(WorkoutFeature.State()))
+                // TODO: Preserve order of selected exercises.
+                // IOts using a Set of exercises at the moment so order is lost. Better
+                // to use an array and manually check for duplicates.
+                let exercises = state.home.selectedExercises.map { $0 }
+                let initialWorkoutState = WorkoutFeature.State(exercises: exercises)
+                state.path.append(.workout(initialWorkoutState))
                 return .none
 
             case .home, .path:

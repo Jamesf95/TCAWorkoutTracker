@@ -13,6 +13,6 @@ struct WorkoutPage: View {
     let store: StoreOf<WorkoutFeature>
 
     var body: some View {
-        Text("Workout page")
+        Text("Workout page: \(store.state.exercises)")
     }
 }

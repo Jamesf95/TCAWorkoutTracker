@@ -13,12 +13,26 @@ struct HomeFeature {
     @ObservableState
     struct State: Equatable {
         var exerciseList: [Exercise]
+        var selectedExercises: Set<Exercise>
         var isLoading: Bool
         var error: HomeError?
+        
+        init(
+            exerciseList: [Exercise] = [],
+            selectedExercises: Set<Exercise> = Set<Exercise>(),
+            isLoading: Bool = false,
+            error: HomeError? = nil
+        ) {
+            self.exerciseList = exerciseList
+            self.selectedExercises = selectedExercises
+            self.isLoading = isLoading
+            self.error = error
+        }
     }
     
     enum Action {
         case startWorkoutTapped
+        case selectedExercisesChanged(Set<Exercise>)
         case initialLoad
         case retryPressed
         case exerciseListLoaded([Exercise])
@@ -35,6 +49,10 @@ struct HomeFeature {
         Reduce { state, action in
             switch action {
 
+            case .selectedExercisesChanged(let selectedExercises):
+                state.selectedExercises = selectedExercises
+                return .none
+                
             case .startWorkoutTapped:
                 return .none
             
@@ -72,14 +90,6 @@ struct HomeFeature {
             }
         }
     }
-}
-
-extension HomeFeature.State {
-    
-    static var initial: HomeFeature.State {
-        .init(exerciseList: [], isLoading: false, error: nil)
-    }
-    
 }
 
 private nonisolated func parseHomeError(from cause: Error) -> HomeFeature.HomeError {

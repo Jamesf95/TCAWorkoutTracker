@@ -4,7 +4,9 @@ import ComposableArchitecture
 struct WorkoutFeature {
 
     @ObservableState
-    struct State: Equatable {}
+    struct State: Equatable {
+        let exercises: [Exercise]
+    }
 
     enum Action {
         case onAppear
