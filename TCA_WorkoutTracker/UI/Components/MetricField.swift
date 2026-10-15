@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MetricField: View {
     
-    enum FieldType {
+    enum FieldType: Hashable {
         case weight
         case reps
     }
@@ -17,7 +17,7 @@ struct MetricField: View {
     let title: String
     @Binding var value: String
     let fieldType: FieldType
-    @FocusState private var isFocused: Bool
+    let focusedField: FocusState<FieldType?>.Binding
     
     var body: some View {
         VStack(alignment: .leading, spacing: 7) {
@@ -33,9 +33,9 @@ struct MetricField: View {
                     .keyboardType(fieldType.keyboardType)
                     .multilineTextAlignment(.leading)
                     .submitLabel(.done)
-                    .focused($isFocused)
+                    .focused(focusedField, equals: fieldType)
                     .onSubmit {
-                        isFocused = false
+                        focusedField.wrappedValue = nil
                     }
                     .accessibilityLabel(title.capitalized)
 
@@ -52,12 +52,14 @@ struct MetricField: View {
         .overlay {
             RoundedRectangle(cornerRadius: 14)
                 .stroke(
-                    isFocused ? AppColor.focusBorder : AppColor.darkInputBorder,
-                    lineWidth: isFocused ? 1.5 : 1
+                    focusedField.wrappedValue == fieldType
+                        ? AppColor.focusBorder
+                        : AppColor.darkInputBorder,
+                    lineWidth: focusedField.wrappedValue == fieldType ? 1.5 : 1
                 )
         }
         .clipShape(RoundedRectangle(cornerRadius: 14))
-        .animation(.easeOut(duration: 0.15), value: isFocused)
+        .animation(.easeOut(duration: 0.15), value: focusedField.wrappedValue)
     }
 }
 
@@ -81,5 +83,21 @@ extension MetricField.FieldType {
 
 
 #Preview {
-    MetricField(title: "Reps", value: .constant("1"), fieldType: .reps)
+    MetricFieldPreview()
+}
+
+private struct MetricFieldPreview: View {
+    @State private var value = "1"
+    @FocusState private var focusedField: MetricField.FieldType?
+
+    var body: some View {
+        MetricField(
+            title: "Reps",
+            value: $value,
+            fieldType: .reps,
+            focusedField: $focusedField
+        )
+        .padding()
+        .background(AppColor.darkCard)
+    }
 }

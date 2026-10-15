@@ -88,8 +88,8 @@ public struct Exercise: Codable, Hashable, Sendable, Identifiable {
         self.tips = tips
     }
     
-    public var id: Int {
-        self.hashValue
+    public var id: String {
+        self.name
     }
 }
 

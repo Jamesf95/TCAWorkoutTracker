@@ -3,6 +3,7 @@ import SwiftUI
 struct LimeButton: View {
     let title: String
     let action: () -> Void
+    var isDisabled = false
 
     var body: some View {
         Button(action: action) {
@@ -21,6 +22,8 @@ struct LimeButton: View {
             .contentShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
+        .disabled(isDisabled)
+        .opacity(isDisabled ? 0.5 : 1)
     }
 }
 
